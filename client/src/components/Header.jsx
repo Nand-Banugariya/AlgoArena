@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Moon, Sun, Menu, X, Code, User, LogOut } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { isDark, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -19,6 +21,15 @@ const Header = () => {
     { name: 'Community', href: '#community' },
     { name: 'Leaderboard', href: '#leaderboard' },
   ];
+
+  useEffect(() => {
+    if (!user) {
+      const timer = setTimeout(() => {
+        setIsAuthModalOpen(true);
+      }, 30000); 
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   return (
     <>
@@ -77,11 +88,15 @@ const Header = () => {
                     className="flex items-center space-x-2 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-6 h-6 rounded-full"
-                    />
+                    {/* Avatar with initials */}
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white font-bold text-sm uppercase">
+                      {(() => {
+                        if (!user.name) return '';
+                        const parts = user.name.trim().split(' ');
+                        if (parts.length === 1) return parts[0][0];
+                        return parts[0][0] + parts[1][0];
+                      })()}
+                    </div>
                     <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300">
                       {user.name}
                     </span>
@@ -101,9 +116,10 @@ const Header = () => {
                         <span>Profile</span>
                       </a>
                       <button
-                        onClick={() => {
-                          logout();
+                        onClick={async () => {
+                          await logout();
                           setShowUserMenu(false);
+                          navigate('/');
                         }}
                         className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
                       >

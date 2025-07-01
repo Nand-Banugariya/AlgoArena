@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
+import axios from '../contexts/axios';
 
 const AuthContext = createContext(undefined);
 
@@ -67,7 +67,12 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await axios.post('/logout');
+    } catch (err) {
+      // Optionally handle error
+    }
     setUser(null);
   };
 
