@@ -142,7 +142,7 @@ const Leaderboard = () => {
           className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700"
         >
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6">
-            <h3 className="text-2xl font-bold text-white text-center">Global Leaderboard</h3>
+            <h3 className="text-2xl font-bold text-white text-center">Department Leaderboard</h3>
           </div>
 
           <div className="p-6">

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Code, Zap, Trophy, Users } from 'lucide-react';
+import { SiCplusplus, SiPython, SiJavascript } from 'react-icons/si';
+import { FaJava } from 'react-icons/fa';
 
 const Hero = () => {
   const canvasRef = useRef(null);
@@ -58,11 +59,12 @@ const Hero = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Floating elements with language icons from react-icons
   const floatingElements = [
-    { icon: Code, delay: 0, x: '10%', y: '20%' },
-    { icon: Zap, delay: 0.2, x: '85%', y: '15%' },
-    { icon: Trophy, delay: 0.4, x: '15%', y: '70%' },
-    { icon: Users, delay: 0.6, x: '80%', y: '75%' },
+    { Icon: SiCplusplus, alt: 'C++', delay: 0, x: '10%', y: '20%' },
+    { Icon: FaJava, alt: 'Java', delay: 0.2, x: '85%', y: '15%' },
+    { Icon: SiPython, alt: 'Python', delay: 0.4, x: '15%', y: '70%' },
+    { Icon: SiJavascript, alt: 'JavaScript', delay: 0.6, x: '80%', y: '75%' },
   ];
 
   return (
@@ -75,7 +77,7 @@ const Hero = () => {
       />
 
       {/* Floating 3D Elements */}
-      {floatingElements.map(({ icon: Icon, delay, x, y }, index) => (
+      {floatingElements.map(({ Icon, alt, delay, x, y }, index) => (
         <motion.div
           key={index}
           className="absolute hidden lg:block"
@@ -103,7 +105,7 @@ const Hero = () => {
           }}
         >
           <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-2xl backdrop-blur-sm">
-            <Icon className="w-8 h-8 text-white" />
+            <Icon className="w-10 h-10 text-white" title={alt} />
           </div>
         </motion.div>
       ))}
@@ -115,17 +117,6 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 text-purple-600 dark:text-purple-400 text-sm font-medium mb-8 backdrop-blur-sm"
-          >
-            🚀 New: AI-Powered Code Reviews
-          </motion.div>
-
-          {/* Main Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -148,9 +139,7 @@ const Hero = () => {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Join thousands of students mastering programming through interactive challenges,
-            real-world projects, and AI-powered mentorship.
-          </motion.p>
+            Code. Compete. Conquer. Join the ultimate coding battleground with AI mentorship, real-time leaderboards, and a vibrant community.          </motion.p>
 
           {/* CTA Buttons */}
           <motion.div
@@ -164,15 +153,15 @@ const Hero = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              Start Coding Free
+              Join Contest
             </motion.button>
-            <motion.button
+            {/* <motion.button
               className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
               Watch Demo
-            </motion.button>
+            </motion.button> */}
           </motion.div>
 
           {/* Stats */}
