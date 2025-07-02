@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['student', 'teacher'], required: true },
   userid: { type: String, required: true, unique: true },
-  sessionId: { type: String, default: null }, // For single session enforcement
+  isLoggedIn: { type: Boolean, default: false } // Track login status
 });
 
 module.exports = mongoose.model('User', userSchema);

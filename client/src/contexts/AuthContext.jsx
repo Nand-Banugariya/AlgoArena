@@ -19,14 +19,17 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, navigate) => {
     setIsLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { email, password });
-      setUser({
+      const res = await axios.post('/login', { email, password });
+      const userObj = {
         id: res.data.userid,
         name: res.data.name,
         email: res.data.email,
         role: res.data.role,
         avatar: 'https://images.pexels.com/photos/1239288/pexels-photo-1239288.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=2',
-      });
+      };
+      setUser(userObj);
+      // Store user in localStorage for session check in other tabs
+      localStorage.setItem('user', JSON.stringify(userObj));
       // Use react-router navigation
       if (navigate) {
         if (res.data.role === 'student') {
@@ -36,7 +39,11 @@ export const AuthProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      alert('Invalid email or password');
+      if (err.response && err.response.status === 403) {
+        alert(err.response.data.message);
+      } else {
+        alert('Invalid email or password');
+      }
     }
     setIsLoading(false);
   };
@@ -74,6 +81,7 @@ export const AuthProvider = ({ children }) => {
       // Optionally handle error
     }
     setUser(null);
+    localStorage.removeItem('user'); // Remove user from localStorage on logout
   };
 
   return (

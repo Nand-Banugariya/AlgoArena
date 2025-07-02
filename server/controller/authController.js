@@ -1,28 +1,32 @@
 // controller/authController.js
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
+    // Clear any existing token cookie before setting a new one (for cross-user login in same browser)
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
     const user = await User.findOne({ email, password });
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    // Prevent multiple logins: if user already has a sessionId, deny login
-    if (user.sessionId) {
-      return res.status(403).json({ message: 'User already logged in elsewhere. Please logout first.' });
+    // Check if user is already logged in
+    if (user.isLoggedIn) {
+      return res.status(403).json({ message: 'User is already logged in elsewhere. Please logout first.' });
     }
-    // Generate a new sessionId for this login
-    const sessionId = crypto.randomBytes(16).toString('hex');
-    user.sessionId = sessionId;
+    // Set isLoggedIn to true
+    user.isLoggedIn = true;
     await user.save();
-    // Generate JWT token, include sessionId
+    // Generate JWT token (no sessionId)
     const token = jwt.sign(
-      { userid: user.userid, role: user.role, email: user.email, sessionId },
+      { userid: user.userid, role: user.role, email: user.email },
       JWT_SECRET,
       { expiresIn: '2d' }
     );
@@ -46,10 +50,11 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
+    // Find user by token and set isLoggedIn to false
     const token = req.cookies?.token;
     if (token) {
       const decoded = jwt.verify(token, JWT_SECRET);
-      await User.updateOne({ userid: decoded.userid }, { $set: { sessionId: null } });
+      await User.updateOne({ userid: decoded.userid }, { $set: { isLoggedIn: false } });
     }
     res.clearCookie('token', {
       httpOnly: true,
