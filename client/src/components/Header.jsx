@@ -15,11 +15,11 @@ const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'Challenges', href: '#challenges' },
-    { name: 'Learn', href: '#learn' },
-    { name: 'Community', href: '#community' },
-    { name: 'Leaderboard', href: '#leaderboard' },
+    { name: 'Home', path: '/' },
+    { name: 'Practise', path: '/student/practise' },
+    { name: 'Contest', path: '/student/contest' },
+    { name: 'Community', path: '/student/community' },
+    { name: 'Leaderboard', path: '/student/leaderboard' },
   ];
 
   useEffect(() => {
@@ -58,8 +58,8 @@ const Header = () => {
               {navItems.map((item) => (
                 <motion.a
                   key={item.name}
-                  href={item.href}
-                  className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium"
+                  onClick={() => navigate(item.path)}
+                  className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium cursor-pointer"
                   whileHover={{ y: -2 }}
                   whileTap={{ y: 0 }}
                 >
@@ -161,14 +161,13 @@ const Header = () => {
               className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700"
             >
               {navItems.map((item) => (
-                <a
+                <span
                   key={item.name}
-                  href={item.href}
-                  className="block py-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => { setIsMenuOpen(false); navigate(item.path); }}
+                  className="block py-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors cursor-pointer"
                 >
                   {item.name}
-                </a>
+                </span>
               ))}
             </motion.nav>
           )}
